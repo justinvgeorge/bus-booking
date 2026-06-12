@@ -1,6 +1,6 @@
 ﻿namespace BusBooking.API.Models
 {
-    public class Route
+    public class BusRoute
     {
         public int Id { get; set; }
         public string Origin { get; set; } = string.Empty;
