@@ -32,9 +32,9 @@ namespace BusBooking.API.Services
             if (seat == null) { throw new Exception("This seat does not exist"); }
             if (!seat.IsAvailable) { throw new Exception("This seat is not available"); }
             var lockOwner = await _seatService.GetSeatLockOwnerAsync(seatId);
-            if (lockOwner != userId.ToString()) { throw new Exception("This seat is not available currently"); }
+            if (lockOwner != userId.ToString()) { throw new Exception($"Seat {seatId} is not locked by you. Please lock the seat before booking."); }
             var schedule = await _scheduleRepository.GetByIdAsync(scheduleId);
-            if (schedule == null) { throw new Exception($"{scheduleId} is not available."); };
+            if (schedule == null) { throw new Exception($"Schedule with ID {scheduleId} does not exist."); };
            
             var booking = new Booking
             {

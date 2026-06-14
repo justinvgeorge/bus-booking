@@ -138,6 +138,7 @@ namespace BusBooking.API.Controllers
                 Arrival = schedule.Arrival,
                 Price = schedule.Price,
                 Status = schedule.Status,
+                BusId = schedule.BusId,
                 BusNumber = schedule.Bus?.BusNumber ?? string.Empty,
                 BusType = schedule.Bus?.BusType ?? string.Empty,
                 Origin = schedule.Route?.Origin ?? string.Empty,
