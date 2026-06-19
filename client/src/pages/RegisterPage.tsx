@@ -25,9 +25,11 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'response' in err) {
         const axiosError = err as { response?: { data?: string } }
-        setError(axiosError.response?.data || 'Login failed. Please try again.')
+        setError(
+          axiosError.response?.data || 'Register failed. Please try again.'
+        )
       } else {
-        setError('Login failed. Please try again.')
+        setError('Register failed. Please try again.')
       }
     } finally {
       setLoading(false)
