@@ -12,10 +12,25 @@ export interface Schedule {
   price: number
   status: string
   busId: number
+  routeId: number
+  route: BusRoute
+  bus: Bus
+}
+
+export interface Bus {
+  id: number
   busNumber: string
   busType: string
+  totalSeats: number
+  isActive: boolean
+}
+
+export interface BusRoute {
+  id: number
   origin: string
   destination: string
+  distance: number
+  duration: string
 }
 
 export interface SeatStatus {

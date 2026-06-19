@@ -2,6 +2,7 @@
 using BusBooking.API.Models;
 using BusBooking.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BusBooking.API.Repositories
 {
@@ -22,7 +23,9 @@ namespace BusBooking.API.Repositories
         }
         public async Task<IEnumerable<Schedule>> GetByRouteAndDateAsync(int routeId, DateTime date)
         {
-            return await _context.Schedules.Include(x => x.Bus).Include(x => x.Route).Where(x => x.RouteId == routeId && x.Departure.Date  == date.Date).ToListAsync();
+            var utcDate = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
+            var nextDay = utcDate.AddDays(1);
+            return await _context.Schedules.Include(x => x.Bus).Include(x => x.Route).Where(x => x.RouteId == routeId && x.Departure >= utcDate && x.Departure < nextDay).ToListAsync();
         }
         public async Task<Schedule> CreateAsync(Schedule schedule)
         {

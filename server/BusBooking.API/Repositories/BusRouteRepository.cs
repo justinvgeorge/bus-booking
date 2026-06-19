@@ -22,7 +22,7 @@ namespace BusBooking.API.Repositories
         }
         public async Task<IEnumerable<BusRoute>> GetByOriginAndDestinationAsync(string origin, string destination)
         {
-            return await _context.Routes.Where(x=>x.Origin == origin && x.Destination == destination).ToListAsync();
+            return await _context.Routes.Where(x=>x.Origin.ToLower() == origin.ToLower() && x.Destination.ToLower() == destination.ToLower()).ToListAsync();
         }
         public async Task<BusRoute> CreateAsync(BusRoute route)
         {
