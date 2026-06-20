@@ -3,6 +3,7 @@ export interface AuthResponse {
   fullName: string
   email: string
   role: string
+  id: number
 }
 
 export interface Schedule {

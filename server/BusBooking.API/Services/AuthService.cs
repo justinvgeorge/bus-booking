@@ -44,7 +44,8 @@ namespace BusBooking.API.Services
                 Token = token,
                 FullName = dto.FullName,
                 Email = dto.Email,
-                Role = newUser.Role
+                Role = newUser.Role,
+                Id = newUser.Id
             };
 
             return userDto;
@@ -66,7 +67,8 @@ namespace BusBooking.API.Services
                 Token = token,
                 FullName = user.FullName,
                 Email = dto.Email,
-                Role = user.Role
+                Role = user.Role,
+                Id = user.Id
             };
 
             return userDto;
