@@ -53,7 +53,7 @@ namespace BusBooking.API.Controllers
             {
                 var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Utc);
                 var result = await _scheduleService.SearchSchedulesAsync(origin, destination, date);
-                return Ok(result);
+                return Ok(result.Select(s => MapToResponseDTO(s))); // returns mapped DTOs
             }
             catch (Exception ex)
             {

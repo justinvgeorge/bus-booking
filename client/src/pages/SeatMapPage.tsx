@@ -118,9 +118,12 @@ export default function SeatMapPage() {
 
   const getSeatColor = (seat: SeatStatus) => {
     if (!seat.isAvailable) return 'bg-red-400 cursor-not-allowed text-white'
+
     if (seat.isLocked && seat.lockedByUserId === String(user?.id))
       return 'bg-blue-500 cursor-pointer text-white'
+
     if (seat.isLocked) return 'bg-yellow-400 cursor-not-allowed text-white'
+
     return 'bg-green-400 cursor-pointer text-white hover:bg-green-500'
   }
 

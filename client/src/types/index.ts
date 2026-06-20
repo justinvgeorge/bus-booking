@@ -6,7 +6,7 @@ export interface AuthResponse {
   id: number
 }
 
-export interface Schedule {
+export interface SearchSchedule {
   id: number
   departure: string
   arrival: string
@@ -16,6 +16,19 @@ export interface Schedule {
   routeId: number
   route: BusRoute
   bus: Bus
+}
+
+export interface Schedule {
+  id: number
+  departure: string
+  arrival: string
+  price: number
+  status: string
+  busId: number
+  busNumber: string
+  busType: string
+  origin: string
+  destination: string
 }
 
 export interface Bus {

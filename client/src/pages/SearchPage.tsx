@@ -119,10 +119,10 @@ export default function SearchPage() {
               >
                 <div>
                   <h2 className="text-lg font-bold text-gray-800">
-                    {schedule.route.origin} → {schedule.route.destination}
+                    {schedule.origin} → {schedule.destination}
                   </h2>
                   <p className="text-sm text-gray-500 mt-1">
-                    {schedule.bus.busNumber} · {schedule.bus.busType}
+                    {schedule.busNumber} · {schedule.busType}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     {new Date(schedule.departure).toLocaleTimeString()} →{' '}

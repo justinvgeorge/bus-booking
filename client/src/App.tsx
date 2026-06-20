@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage'
 import SearchPage from './pages/SearchPage'
 import SeatMapPage from './pages/SeatMapPage'
 import MyBookingsPage from './pages/MyBookingsPage'
+import ConfirmBookingPage from './pages/ConfirmBookingPage'
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MyBookingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/confirm/:scheduleId/:seatId"
+            element={
+              <ProtectedRoute>
+                <ConfirmBookingPage />
               </ProtectedRoute>
             }
           />
