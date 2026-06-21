@@ -99,6 +99,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Ollama HTTP Client
+builder.Services.AddHttpClient("Ollama", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+    client.Timeout = TimeSpan.FromSeconds(120);
+});
+
+// Chat Service
+builder.Services.AddScoped<IChatService, ChatService>();
+
 var app = builder.Build();
 app.UseCors("AllowFrontend");
 
