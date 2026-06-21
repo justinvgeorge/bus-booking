@@ -21,11 +21,21 @@ namespace BusBooking.API.Repositories
         {
             return await _context.Schedules.Include(x => x.Bus).Include(x => x.Route).FirstOrDefaultAsync(x=>x.Id == id);
         }
-        public async Task<IEnumerable<Schedule>> GetByRouteAndDateAsync(int routeId, DateTime date)
+        public async Task<IEnumerable<Schedule>> GetByRouteAndDateAsync(int routeId, DateTime? date)
         {
-            var utcDate = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
-            var nextDay = utcDate.AddDays(1);
-            return await _context.Schedules.Include(x => x.Bus).Include(x => x.Route).Where(x => x.RouteId == routeId && x.Departure >= utcDate && x.Departure < nextDay).ToListAsync();
+            var query = _context.Schedules
+                .Include(x => x.Bus)
+                .Include(x => x.Route)
+                .Where(x => x.RouteId == routeId);
+
+            if(date.HasValue)
+            {
+                var utcDate = DateTime.SpecifyKind(date.Value.Date, DateTimeKind.Utc);
+                var nextDay = utcDate.AddDays(1);
+                query = query.Where(x => x.Departure >= utcDate && x.Departure < nextDay);
+            }
+
+            return await query.ToListAsync();
         }
         public async Task<Schedule> CreateAsync(Schedule schedule)
         {

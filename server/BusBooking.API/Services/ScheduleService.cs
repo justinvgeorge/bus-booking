@@ -1,6 +1,7 @@
 ﻿using BusBooking.API.Models;
 using BusBooking.API.Repositories.Interfaces;
 using BusBooking.API.Services.Interfaces;
+using Microsoft.AspNetCore.Routing;
 
 namespace BusBooking.API.Services
 {
@@ -23,17 +24,44 @@ namespace BusBooking.API.Services
         {
             return await _scheduleRepository.GetByIdAsync(id);
         }
-        public async Task<IEnumerable<Schedule>> SearchSchedulesAsync(string origin, string destination, DateTime date)
+        public async Task<PaginatedResult<Schedule>> SearchSchedulesAsync(string origin, string destination, DateTime? date, int page, int pageSize)
         {
             var busRoutes =  await _busRouteRepository.GetByOriginAndDestinationAsync(origin,destination);
-            if(!busRoutes.Any()) { return Enumerable.Empty<Schedule>(); }
+
+            Console.WriteLine($"Routes found: {busRoutes.Count()}");
+
+            if (!busRoutes.Any()) 
+            {
+                return new PaginatedResult<Schedule>
+                {
+                    Items = new List<Schedule>(),
+                    TotalCount = 0,
+                    Page = page,
+                    PageSize = pageSize
+                };
+            }
             var schedules = new List<Schedule>();
             foreach(var busRoute in busRoutes)
             {
-                var schedule = await _scheduleRepository.GetByRouteAndDateAsync(busRoute.Id, date.Date);
-                schedules.AddRange(schedule);
+                Console.WriteLine($"Checking routeId: {busRoute.Id}"); // ← add this
+                var routeSchedule = await _scheduleRepository.GetByRouteAndDateAsync(busRoute.Id, date);
+                
+                schedules.AddRange(routeSchedule);
             }
-            return schedules;
+
+            var totalCount = schedules.Count();
+            var items = schedules.OrderBy(s => s.Departure)
+                .Skip((page-1)*pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedResult<Schedule>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
 
         }
         public async Task<Schedule> CreateScheduleAsync(Schedule schedule)

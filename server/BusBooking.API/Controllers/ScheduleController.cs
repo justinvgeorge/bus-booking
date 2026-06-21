@@ -47,13 +47,26 @@ namespace BusBooking.API.Controllers
             }
         }
         [HttpGet("search")]
-        public async Task<IActionResult> GetSearchSchedule([FromQuery] string origin, [FromQuery] string destination, [FromQuery] DateTime date)
+        public async Task<IActionResult> GetSearchSchedule(
+            [FromQuery] string origin, 
+            [FromQuery] string destination, 
+            [FromQuery] DateTime? date,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 5)
         {
             try
             {
-                var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Utc);
-                var result = await _scheduleService.SearchSchedulesAsync(origin, destination, date);
-                return Ok(result.Select(s => MapToResponseDTO(s))); // returns mapped DTOs
+                var result = await _scheduleService.SearchSchedulesAsync(origin, destination, date, page, pageSize);
+                return Ok(new
+                {
+                    items = result.Items.Select(s => MapToResponseDTO(s)),
+                    totalCount =result.TotalCount,
+                    page = result.Page,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }
+                    
+                    ); // returns mapped DTOs
             }
             catch (Exception ex)
             {

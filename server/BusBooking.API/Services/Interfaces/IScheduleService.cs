@@ -6,7 +6,7 @@ namespace BusBooking.API.Services.Interfaces
     {
         Task<IEnumerable<Schedule>> GetAllScheduleAsync();
         Task<Schedule?> GetScheduleByIdAsync(int id);
-        Task<IEnumerable<Schedule>> SearchSchedulesAsync(string origin, string destination, DateTime date);
+        Task<PaginatedResult<Schedule>> SearchSchedulesAsync(string origin, string destination, DateTime? date, int page, int pagesize);
         Task<Schedule> CreateScheduleAsync(Schedule schedule);
         Task<Schedule> UpdateScheduleAsync(Schedule schedule);
         Task<bool> DeleteScheduleAsync(int id);

@@ -6,16 +6,12 @@ export interface AuthResponse {
   id: number
 }
 
-export interface SearchSchedule {
-  id: number
-  departure: string
-  arrival: string
-  price: number
-  status: string
-  busId: number
-  routeId: number
-  route: BusRoute
-  bus: Bus
+export interface PaginatedResult<T> {
+  items: T[]
+  totalCount: number
+  page: number
+  pageSize: number
+  totalPages: number
 }
 
 export interface Schedule {

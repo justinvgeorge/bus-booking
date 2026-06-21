@@ -7,6 +7,9 @@ export default function SearchPage() {
   const [origin, setOrigin] = useState('')
   const [destination, setDestination] = useState('')
   const [date, setDate] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -14,14 +17,43 @@ export default function SearchPage() {
 
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.SubmitEvent<HTMLFormElement>,
+    page = 1
+  ) => {
     e.preventDefault()
     setError('')
     setLoading(true)
     setSearched(true)
     try {
-      const result = await scheduleService(origin, destination, date)
-      setSchedules(result)
+      const result = await scheduleService(origin, destination, date, page)
+      console.log(result)
+      setSchedules(result.items)
+      setTotalPages(result.totalPages)
+      setTotalCount(result.totalCount)
+      setCurrentPage(page)
+    } catch (error) {
+      if (error && typeof error == 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: string } }
+        setError(
+          axiosError.response?.data || 'Search failed. Please try again.'
+        )
+      } else {
+        setError('Search failed. Please try again.')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePageChange = async (page: number) => {
+    setLoading(true)
+    try {
+      const result = await scheduleService(origin, destination, date, page)
+      setSchedules(result.items)
+      setTotalPages(result.totalPages)
+      setTotalCount(result.totalCount)
+      setCurrentPage(page)
     } catch (error) {
       if (error && typeof error == 'object' && 'response' in error) {
         const axiosError = error as { response?: { data?: string } }
@@ -58,7 +90,7 @@ export default function SearchPage() {
                   setOrigin(e.target.value)
                 }}
                 required
-                placeholder="Bangalore"
+                placeholder="Mumbai"
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -73,7 +105,7 @@ export default function SearchPage() {
                   setDestination(e.target.value)
                 }}
                 required
-                placeholder="Chennai"
+                placeholder="Pune"
                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -88,7 +120,6 @@ export default function SearchPage() {
               onChange={e => {
                 setDate(e.target.value)
               }}
-              required
               className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
             />
           </div>
@@ -146,6 +177,49 @@ export default function SearchPage() {
             )
           })}
         </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-6">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1 || loading}
+              className="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                disabled={loading}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === page
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages || loading}
+              className="px-3 py-1 rounded border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+        {/* Results count */}
+        {searched && totalCount > 0 && (
+          <p className="text-center text-sm text-gray-500 mt-2">
+            Showing page {currentPage} of {totalPages} ({totalCount} total
+            results)
+          </p>
+        )}
       </div>
     </div>
   )
