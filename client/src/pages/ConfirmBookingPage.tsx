@@ -18,7 +18,6 @@ export default function ConfirmBookingPage() {
     const loadSchedule = async () => {
       try {
         const result = await getScheduleById(Number(scheduleId))
-        console.log(result)
         setSchedule(result)
       } catch {
         setError('Unable to load schedule.')

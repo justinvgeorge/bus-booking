@@ -28,8 +28,6 @@ namespace BusBooking.API.Services
         {
             var busRoutes =  await _busRouteRepository.GetByOriginAndDestinationAsync(origin,destination);
 
-            Console.WriteLine($"Routes found: {busRoutes.Count()}");
-
             if (!busRoutes.Any()) 
             {
                 return new PaginatedResult<Schedule>
@@ -43,7 +41,6 @@ namespace BusBooking.API.Services
             var schedules = new List<Schedule>();
             foreach(var busRoute in busRoutes)
             {
-                Console.WriteLine($"Checking routeId: {busRoute.Id}"); // ← add this
                 var routeSchedule = await _scheduleRepository.GetByRouteAndDateAsync(busRoute.Id, date);
                 
                 schedules.AddRange(routeSchedule);

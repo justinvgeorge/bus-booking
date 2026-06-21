@@ -27,7 +27,6 @@ export default function SearchPage() {
     setSearched(true)
     try {
       const result = await scheduleService(origin, destination, date, page)
-      console.log(result)
       setSchedules(result.items)
       setTotalPages(result.totalPages)
       setTotalCount(result.totalCount)

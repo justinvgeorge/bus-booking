@@ -18,7 +18,14 @@ namespace BusBooking.API.Repositories
         }
         public async Task<IEnumerable<Booking>> GetByUserIdAsync(int userId)
         {
-            return await _context.Bookings.Include(x => x.Schedule).Include(x => x.Seat).Where(x=>x.UserId == userId).ToListAsync();
+            return await _context.Bookings
+                .Include(x => x.Schedule)
+                .ThenInclude(s => s.Route)
+                .Include(x => x.Schedule)
+                .ThenInclude(s => s.Bus)
+                .Include(x => x.Seat)
+                .Where(x=>x.UserId == userId)
+                .ToListAsync();
         }
         public async Task<Booking> CreateAsync(Booking booking)
         {
